@@ -12,7 +12,7 @@ We read a wide range of texts such as academic philosophy, political theory, zin
 
 ## How it works
 
-Each week a new reading is posted to this site. There's no registration or membership; just read along and engage in whatever way works for you.
+Each week a new reading is posted to this site. There's no registration or membership; just read along and engage in whatever way works for you. You can join us on the [Discord Server](https://discord.gg/pg9nVqgP4u) if you want to hang out. 
 
 ## Get involved
 
