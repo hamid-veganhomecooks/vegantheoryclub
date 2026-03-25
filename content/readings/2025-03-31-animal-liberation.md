@@ -15,7 +15,9 @@ showReadingTime: false
 showTaxonomies: true
 ---
 
-Peter Singer's landmark 1975 text argues for the equal consideration of animal interests on utilitarian grounds. Often credited with founding the modern animal liberation movement, this reading remains a touchstone — and a point of debate — for vegan theory.
+Peter Singer's landmark 1975 text argues for the equal consideration of animal interests on utilitarian grounds. Often credited with founding the modern animal liberation movement, this reading remains a touchstone and a huge point of debate for vegan theory. 
+
+Peter Singer himself is not a vegan and utilitarianism presents a poor moral framework for animal rights, this work is still recommend to read to be better informed even if I personally find it problematic.
 
 ## Discussion notes
 
