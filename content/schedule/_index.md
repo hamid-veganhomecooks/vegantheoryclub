@@ -3,4 +3,4 @@ title: "Reading Schedule"
 description: "Upcoming and recent weekly readings."
 ---
 
-We post a new reading every week. Readings are listed below — check back each week or watch the repo for updates.
+Week of 3/26/2026 Up to chapter 3 of Black Awakening in Capitalist America
