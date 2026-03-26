@@ -13,6 +13,10 @@ showDate: true
 showAuthor: false
 showReadingTime: false
 showTaxonomies: true
+showComments: true
+instance: "veganism.social"
+user: "vegantheoryclub"
+tootId: "116292524854491317"
 ---
 
 Black Awakening in Capitalist America is a 1969 social sciences and history book by American scholar Robert L. Allen that analyzes the experience of Black residents of the United States as that of a colonized nation within a nation. Allen primarily analyzes Black organizing in the 1960s and often draws from the work of Frantz Fanon. 
@@ -49,3 +53,4 @@ Black Awakening in Capitalist America is a 1969 social sciences and history book
 14. What was the most surprising, challenging, or thought-provoking idea in Black Awakening in Capitalist America? Did it change the way you view American history or current events? 
 15. If you could ask Robert L. Allen one question about his book today, what would it be? 
 16. After reading this, how do you define "Black Power"? Has the book's definition influenced your own? 
+

@@ -1,0 +1,20 @@
+{{ if .Params.tootId }}
+{{- $jsDOMPurify := resources.Get "js/purify-3.2.7.min.js" -}}
+{{- $jsDOMPurify = $jsDOMPurify | resources.ExecuteAsTemplate "js/purify-3.2.7.min.js" . | resources.Fingerprint (.Site.Params.fingerprintAlgorithm | default "sha512") -}}
+
+{{- $jsMastodonComments := resources.Get "js/mastodon-comments.js" -}}
+{{- $jsMastodonComments = $jsMastodonComments | resources.ExecuteAsTemplate "js/mastodon-comments.js" . | resources.Minify | resources.Fingerprint (.Site.Params.fingerprintAlgorithm | default "sha512") -}}
+
+<script
+    type="text/javascript"
+    src="{{- $jsDOMPurify.RelPermalink -}}"
+    integrity="{{- $jsDOMPurify.Data.Integrity -}}" defer>
+</script>
+
+<mastodon-comments host="{{- .Params.instance -}}" user="{{- .Params.user -}}" tootId="{{- .Params.tootId -}}"></mastodon-comments>
+<script
+    type="text/javascript"
+    src="{{- $jsMastodonComments.RelPermalink -}}"
+    integrity="{{- $jsMastodonComments.Data.Integrity -}}" defer>
+</script>
+{{ end }}
