@@ -14,14 +14,14 @@ title = "Vegan Theory Club"
   # description = "My awesome website"
   # copyright = "Copy, _right?_ :thinking_face:"
 
-# [params.author]
-#   name = "Your name here"
+ [params.author]
+   name = "Vegan Theory Club"
 #   email = "youremail@example.com"
-#   image = "img/blowfish_logo.png"
+   image = "img/alf.png"
 #   imageQuality = 96
 #   headline = "I'm only human"
 #   bio = "A little bit about you"
-#   links = [
+   links = [
 #     { email = "mailto:hello@your_domain.com" },
 #     { link = "https://link-to-some-website.com/" },
 #     { amazon = "https://www.amazon.com/hz/wishlist/ls/wishlist-id" },
@@ -30,7 +30,7 @@ title = "Vegan Theory Club"
 #     { bluesky = "https://bsky.app/profile/username" },
 #     { codepen = "https://codepen.io/username" },
 #     { dev = "https://dev.to/username" },
-#     { discord = "https://discord.gg/invitecode" },
+     { discord = "https://discord.gg/pg9nVqgP4u" },
 #     { dribbble = "https://dribbble.com/username" },
 #     { facebook = "https://facebook.com/username" },
 #     { flickr = "https://www.flickr.com/photos/username/" },
@@ -46,7 +46,7 @@ title = "Vegan Theory Club"
 #     { kickstarter = "https://www.kickstarter.com/profile/username" },
 #     { lastfm = "https://lastfm.com/user/username" },
 #     { linkedin = "https://linkedin.com/in/username" },
-#     { mastodon = "https://mastodon.instance/@username" },
+     { mastodon = "https://veganism.social/@vegantheoryclub" },
 #     { matrix = "https://matrix.to/#/URI" },
 #     { medium = "https://medium.com/username" },
 #     { microsoft = "https://www.microsoft.com/" },
@@ -74,4 +74,4 @@ title = "Vegan Theory Club"
 #     { ko-fi = "https://ko-fi.com/username" },
 #     { codeberg = "https://codeberg.org/username"},
 #     { printables = "https://www.printables.com/@username"},
-#   ]
+   ]
