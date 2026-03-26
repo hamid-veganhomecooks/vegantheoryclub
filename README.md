@@ -1,4 +1,4 @@
-# Vegan Theory Club
+# [Vegan Theory Club](https://vegantheoryclub.org)
 
 A weekly reading group site built with [Hugo](https://gohugo.io/) and the [Blowfish theme](https://blowfish.page/), hosted on [Cloudflare Pages](https://pages.cloudflare.com/).
 
