@@ -1,11 +1,11 @@
 ---
 title: "Black Awakening in Capitalist America"
-date: 2025-03-24
+date: 2026-03-24
 draft: false
 
 author: "Robert L. Allen"
 source_url: "https://archive.org/details/blackawakeningin00alle"
-scheduled_date: "2025-03-31"
+scheduled_date: "2026-03-31"
 
 topics: ["black power", "african americans", "1969"]
 
