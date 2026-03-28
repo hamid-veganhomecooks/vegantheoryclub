@@ -3,4 +3,11 @@ title: "Reading Schedule"
 description: "Upcoming and recent weekly readings."
 ---
 
-Week of 3/26/2026 Up to chapter 3 of Black Awakening in Capitalist America
+READING SCHEDULE
+Black Awakening in Capitalist America, by Robert L. Allen.
+
+March 30: Ch I-II (pgs 1-89).
+
+April 6: Ch III-IV (pgs 89-193)
+
+April 13: Ch V-VII (pgs 193-274
