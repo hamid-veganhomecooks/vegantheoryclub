@@ -1,13 +1,18 @@
 ---
 title: "Reading Schedule"
 description: "Upcoming and recent weekly readings."
+instance: "veganism.social"
+user: "vegantheoryclub"
+tootId: "116309945788264136"
 ---
 
 READING SCHEDULE
 Black Awakening in Capitalist America, by Robert L. Allen.
 
-March 30: Ch I-II (pgs 1-89).
+April 3: Ch I-II (pgs 1-89)
 
-April 6: Ch III-IV (pgs 89-193)
+April 10: Ch III-IV (pgs 89-193)
 
-April 13: Ch V-VII (pgs 193-274
+April 17: Ch V-VII (pgs 193-274)
+
+Do your best! Try and set aside 20 minutes a day in a quiet place to read. 
