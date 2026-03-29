@@ -3,6 +3,8 @@
 
 This documents how the Mastodon/fediverse comments system works on this site, how to maintain it, and how it was built.
 
+Special thanks to https://github.com/louis-vgn for linking their mastodon comments integration in this closed issue for blowfish https://github.com/nunocoracao/blowfish/issues/1837#issuecomment-3341943246
+
 ---
 
 ## How it works
@@ -158,20 +160,21 @@ This is important to understand when adding new images or scripts.
 
 ## Limitations and moderation
 
-Since the site uses `@vegantheoryclub@veganism.social`, you do not have admin/moderator powers on that instance. Moderation options if a reply is objectionable:
+Since the site uses `@vegantheoryclub@veganism.social`, we do not have admin/moderator powers on that instance. Moderation options if a reply is objectionable:
 
-1. **Ask your contact at veganism.social** to delete the post — it will disappear from the comments on next load
-2. **Delete your own toot** — removes the thread entirely (loses good replies too, nuclear option)
+1. **Ask a moderator at veganism.social** to delete the post — it will disappear from the comments on next load
+2. **Block the user** This should prevent it from being displayed 
+2. **Delete toot** — removes the thread entirely (loses good replies too, nuclear option)
 3. **Remove `tootId` from the front matter** — hides the comments section for that post without deleting anything on Mastodon
 
 ### Future option
-Running your own single-user Akkoma instance on a cheap VPS (Hetzner ~€4/month) would give you full mod controls. Managed hosting options like Masto.host (~$6-9/month) are an alternative with no server management required.
+Running a single-user Akkoma instance on a cheap VPS (Hetzner around €4/month) would give full mod controls. Managed hosting options like Masto.host ( around $6-9/month) is an alternative with no server management required.
 
 ---
 
 ## Updating the JS dependencies
 
-If you need to update DOMPurify or the mastodon-comments component in future, always get the **raw file** not the GitHub webpage:
+To update DOMPurify or the mastodon-comments component in future, always get the **raw file** not the GitHub webpage:
 
 ```
 # DOMPurify latest
