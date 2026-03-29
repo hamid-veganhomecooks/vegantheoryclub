@@ -1,0 +1,37 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Vegan Theory Club//Reading Schedule//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Vegan Theory Club Reading Schedule
+X-WR-CALDESC:Weekly reading schedule for Vegan Theory Club
+X-WR-TIMEZONE:America/New_York
+
+BEGIN:VEVENT
+UID:black-awakening-week1@vegantheoryclub.org
+DTSTART;VALUE=DATE:20260403
+DTEND;VALUE=DATE:20260404
+SUMMARY:VTC Reading Due: Black Awakening Week 1
+DESCRIPTION:Black Awakening in Capitalist America by Robert L. Allen\nChapters I-II (pp. 1-89)\n\nDiscussion questions and full reading notes at:\nhttps://vegantheoryclub.org/readings/2026-04-03-black-awakening-ch1-2/
+URL:https://vegantheoryclub.org/readings/2026-04-03-black-awakening-ch1-2/
+END:VEVENT
+
+BEGIN:VEVENT
+UID:black-awakening-week2@vegantheoryclub.org
+DTSTART;VALUE=DATE:20260410
+DTEND;VALUE=DATE:20260411
+SUMMARY:VTC Reading Due: Black Awakening Week 2
+DESCRIPTION:Black Awakening in Capitalist America by Robert L. Allen\nChapters III-IV (pp. 89-193)\n\nDiscussion questions and full reading notes at:\nhttps://vegantheoryclub.org/readings/2026-04-10-black-awakening-ch3-4/
+URL:https://vegantheoryclub.org/readings/2026-04-10-black-awakening-ch3-4/
+END:VEVENT
+
+BEGIN:VEVENT
+UID:black-awakening-week3@vegantheoryclub.org
+DTSTART;VALUE=DATE:20260417
+DTEND;VALUE=DATE:20260418
+SUMMARY:VTC Reading Due: Black Awakening Week 3
+DESCRIPTION:Black Awakening in Capitalist America by Robert L. Allen\nChapters V-VII (pp. 193-274)\n\nDiscussion questions and full reading notes at:\nhttps://vegantheoryclub.org/readings/2026-04-17-black-awakening-ch5-7/
+URL:https://vegantheoryclub.org/readings/2026-04-17-black-awakening-ch5-7/
+END:VEVENT
+
+END:VCALENDAR
