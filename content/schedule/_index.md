@@ -1,6 +1,7 @@
 ---
 title: "Reading Schedule"
 description: "Upcoming and recent weekly readings."
+showComments: true
 instance: "veganism.social"
 user: "vegantheoryclub"
 tootId: "116309945788264136"
