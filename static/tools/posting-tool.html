@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VTC — New Reading Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --surface2: #222;
+      --border: #2e2e2e;
+      --accent: #b5f03a;
+      --accent-dim: #7aab1a;
+      --text: #e8e8e8;
+      --muted: #666;
+      --error: #ff4d4d;
+      --warning: #f0a03a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 128px;
+      z-index: 1000;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; }
+
+    header {
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+    }
+
+    .eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.2rem;
+      font-weight: 400;
+      color: var(--text);
+    }
+
+    h1 span { color: var(--accent); }
+
+    .subtitle {
+      margin-top: 0.5rem;
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* Steps */
+    .step {
+      margin-bottom: 2rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .step.completed { border-color: var(--accent-dim); opacity: 0.7; }
+    .step.active { border-color: var(--accent); }
+    .step.locked { opacity: 0.4; pointer-events: none; }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.9rem 1.25rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .step-number {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      background: var(--border);
+      color: var(--muted);
+      font-size: 0.65rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+
+    .step.active .step-number {
+      background: var(--accent);
+      color: #0f0f0f;
+    }
+
+    .step.completed .step-number {
+      background: var(--accent-dim);
+      color: #0f0f0f;
+    }
+
+    .step.completed .step-number::after { content: '✓'; }
+
+    .step-title {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .step-status {
+      margin-left: auto;
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+
+    .step.completed .step-status { color: var(--accent-dim); }
+
+    .step-body { padding: 1.25rem; }
+
+    /* Form elements */
+    .field { display: grid; gap: 0.4rem; margin-bottom: 1rem; }
+    .field:last-child { margin-bottom: 0; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    label {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    label .hint {
+      color: var(--muted);
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 0.65rem;
+      margin-left: 0.5rem;
+    }
+
+    input, textarea, select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      padding: 0.7rem 0.9rem;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.15s;
+      border-radius: 2px;
+    }
+
+    input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+    textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+
+    .preview-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 0.9rem 1rem;
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-top: 0.5rem;
+    }
+
+    .preview-box .highlight { color: var(--accent-dim); }
+    .preview-box .value { color: var(--text); }
+
+    /* Buttons */
+    .actions { display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; align-items: center; }
+
+    button {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 0.75rem 1.25rem;
+      border: none;
+      border-radius: 2px;
+      transition: all 0.15s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0f0f0f;
+      font-weight: 700;
+    }
+    .btn-primary:hover { background: #c8ff40; transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    .btn-warning {
+      background: transparent;
+      color: var(--warning);
+      border: 1px solid var(--warning);
+    }
+
+    /* Char counter */
+    .char-count {
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-align: right;
+      margin-top: 0.25rem;
+    }
+    .char-count.over { color: var(--error); }
+
+    /* Result boxes */
+    .result-box {
+      background: var(--surface2);
+      border: 1px solid var(--accent-dim);
+      border-radius: 2px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+
+    .result-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .result-value {
+      font-size: 0.8rem;
+      color: var(--text);
+      word-break: break-all;
+    }
+
+    /* MD output */
+    .md-output {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 1.25rem;
+      font-size: 0.7rem;
+      line-height: 1.8;
+      white-space: pre;
+      overflow-x: auto;
+      color: #aaa;
+      margin-top: 1rem;
+    }
+
+    .md-output .k { color: var(--accent-dim); }
+    .md-output .v { color: var(--text); }
+    .md-output .c { color: #5a8a1a; }
+
+    /* Auth section */
+    .auth-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      padding: 0.5rem 0;
+    }
+
+    .auth-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      flex-shrink: 0;
+    }
+    .auth-dot.ok { background: var(--accent); }
+    .auth-dot.err { background: var(--error); }
+
+    .info-row {
+      font-size: 0.65rem;
+      color: var(--muted);
+      line-height: 1.6;
+      padding: 0.5rem 0;
+    }
+
+    .info-row code {
+      color: var(--accent-dim);
+      font-family: 'Space Mono', monospace;
+    }
+
+    .error-msg {
+      font-size: 0.7rem;
+      color: var(--error);
+      margin-top: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--error);
+      border-radius: 2px;
+      display: none;
+    }
+
+    .error-msg.visible { display: block; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--accent);
+      color: #0f0f0f;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.75rem 1.25rem;
+      border-radius: 2px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.2s;
+      z-index: 9999;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    .spinner {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 2px solid #0f0f0f;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+
+  <div class="container">
+    <header>
+      <p class="eyebrow">Vegan Theory Club — Internal Tool</p>
+      <h1>New <span>Reading</span></h1>
+      <p class="subtitle">Build a reading post end to end — constructs the filename, posts to Mastodon, and generates the markdown file with the toot ID already filled in.</p>
+    </header>
+
+    <!-- STEP 1: Auth -->
+    <div class="step active" id="step-1">
+      <div class="step-header">
+        <div class="step-number">1</div>
+        <div class="step-title">Mastodon Authentication</div>
+        <div class="step-status" id="step-1-status">Not connected</div>
+      </div>
+      <div class="step-body">
+        <div class="info-row">
+          Generate a token at <code>veganism.social → Settings → Development → New Application</code>.<br>
+          Set scope to <code>write:statuses</code>. Your token is saved in localStorage — never committed to git.
+        </div>
+
+        <div class="field" style="margin-top:1rem">
+          <label>Mastodon Instance</label>
+          <input type="text" id="instance" value="veganism.social" placeholder="veganism.social" />
+        </div>
+
+        <div class="field">
+          <label>Access Token</label>
+          <input type="password" id="access-token" placeholder="Paste your access token here" autocomplete="off" />
+        </div>
+
+        <div class="auth-status" id="auth-status">
+          <div class="auth-dot" id="auth-dot"></div>
+          <span id="auth-text">Enter your token and verify</span>
+        </div>
+
+        <div class="actions">
+          <button class="btn-primary" onclick="verifyToken()">Verify Token</button>
+          <button class="btn-secondary" onclick="clearToken()">Clear Saved Token</button>
+        </div>
+
+        <div class="error-msg" id="auth-error"></div>
+      </div>
+    </div>
+
+    <!-- STEP 2: Reading details -->
+    <div class="step locked" id="step-2">
+      <div class="step-header">
+        <div class="step-number">2</div>
+        <div class="step-title">Reading Details</div>
+        <div class="step-status" id="step-2-status">Waiting</div>
+      </div>
+      <div class="step-body">
+
+        <div class="field">
+          <label>Title <span class="hint">— shown as the post heading</span></label>
+          <input type="text" id="title" placeholder="Black Awakening in Capitalist America Week 1" oninput="updateSlug()" />
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Due Date</label>
+            <input type="date" id="due-date" oninput="updatePreview()" />
+          </div>
+          <div class="field">
+            <label>Series Order <span class="hint">— optional</span></label>
+            <input type="number" id="series-order" placeholder="1" min="1" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Series Name <span class="hint">— optional, for multi-week books</span></label>
+          <input type="text" id="series-name" placeholder="Black Awakening in Capitalist America" />
+        </div>
+
+        <div class="field">
+          <label>Book Author</label>
+          <input type="text" id="author" placeholder="Robert L. Allen" />
+        </div>
+
+        <div class="field">
+          <label>Source URL <span class="hint">— link to the text</span></label>
+          <input type="url" id="source-url" placeholder="https://archive.org/details/..." />
+        </div>
+
+        <div class="field">
+          <label>Topics <span class="hint">— comma separated</span></label>
+          <input type="text" id="topics" placeholder="black power, african americans, 1969" />
+        </div>
+
+        <hr class="divider">
+
+        <div class="field">
+          <label>Post Slug <span class="hint">— auto-generated, edit if needed</span></label>
+          <input type="text" id="slug" placeholder="2026-04-03-black-awakening-ch1-2" oninput="updatePreview()" />
+        </div>
+
+        <div class="preview-box" id="url-preview">
+          <span class="highlight">Filename:</span> <span class="value" id="preview-filename">—</span><br>
+          <span class="highlight">URL:</span> <span class="value" id="preview-url">—</span>
+        </div>
+
+        <div class="actions">
+          <button class="btn-primary" onclick="goToStep3()">Continue →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: Description & Toot -->
+    <div class="step locked" id="step-3">
+      <div class="step-header">
+        <div class="step-number">3</div>
+        <div class="step-title">Description & Toot</div>
+        <div class="step-status" id="step-3-status">Waiting</div>
+      </div>
+      <div class="step-body">
+
+        <div class="field">
+          <label>Post Description <span class="hint">— opening paragraph of the reading page</span></label>
+          <textarea id="description" placeholder="Black Awakening in Capitalist America is a 1969 social sciences book..." oninput="buildToot()"></textarea>
+        </div>
+
+        <hr class="divider">
+
+        <div class="field">
+          <label>Toot Body <span class="hint">— pre-filled, edit before posting</span></label>
+          <textarea id="toot-body" oninput="countChars()" rows="5"></textarea>
+          <div class="char-count" id="char-count">0 / 500</div>
+        </div>
+
+        <div class="actions">
+          <button class="btn-primary" onclick="postToot()" id="post-btn">Post to Mastodon</button>
+          <button class="btn-secondary" onclick="buildToot()">Reset Toot</button>
+        </div>
+
+        <div class="error-msg" id="toot-error"></div>
+
+        <div class="result-box" id="toot-result" style="display:none">
+          <div class="result-label">✓ Posted successfully</div>
+          <div class="result-value" id="toot-url"></div>
+          <div style="margin-top:0.5rem;font-size:0.65rem;color:var(--muted)">Toot ID: <span id="toot-id-display" style="color:var(--accent-dim)"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: Generate markdown -->
+    <div class="step locked" id="step-4">
+      <div class="step-header">
+        <div class="step-number">4</div>
+        <div class="step-title">Generate Markdown File</div>
+        <div class="step-status" id="step-4-status">Waiting</div>
+      </div>
+      <div class="step-body">
+
+        <div class="info-row">
+          Your markdown file is ready with all front matter filled in — including the toot ID. Add discussion notes below, then download.
+        </div>
+
+        <div class="field" style="margin-top:1rem">
+          <label>Discussion Notes <span class="hint">— markdown, will appear after the ## Discussion notes heading</span></label>
+          <textarea id="discussion-notes" rows="10" placeholder="## Part 1: Core Themes&#10;&#10;1. What is the central argument of the text?&#10;2. How does the author support this argument?&#10;&#10;## Part 2: Context&#10;&#10;3. What historical context shapes this work?" oninput="buildMarkdown()"></textarea>
+        </div>
+
+        <div class="md-output" id="md-output"></div>
+
+        <div class="actions">
+          <button class="btn-primary" onclick="downloadMD()">⬇ Download .md File</button>
+          <button class="btn-secondary" onclick="copyMD()">Copy to Clipboard</button>
+        </div>
+
+        <hr class="divider">
+
+        <div class="info-row" style="color:var(--accent-dim)">
+          Next steps after downloading:
+        </div>
+        <div class="info-row" style="margin-top:0.25rem">
+          1. Move the file to <code>content/readings/</code><br>
+          2. Run <code>tools/ics-generator.html</code> to add the calendar event<br>
+          3. Commit everything and push
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /container -->
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- State ----
+    let state = {
+      token: '',
+      instance: 'veganism.social',
+      accountUsername: '',
+      tootId: '',
+      tootUrl: '',
+      slug: '',
+      dueDate: '',
+    };
+
+    // ---- Init: load saved token ----
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('vtc_token');
+      const savedInstance = localStorage.getItem('vtc_instance');
+      if (saved) document.getElementById('access-token').value = saved;
+      if (savedInstance) document.getElementById('instance').value = savedInstance;
+      if (saved) verifyToken(true);
+    });
+
+    // ---- Step 1: Auth ----
+    async function verifyToken(silent = false) {
+      const token = document.getElementById('access-token').value.trim();
+      const instance = document.getElementById('instance').value.trim();
+
+      if (!token || !instance) {
+        showAuthError('Please enter both instance and token.');
+        return;
+      }
+
+      setAuthStatus('Verifying...', 'neutral');
+
+      try {
+        const res = await fetch(`https://${instance}/api/v1/accounts/verify_credentials`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const data = await res.json();
+        state.token = token;
+        state.instance = instance;
+        state.accountUsername = data.username;
+
+        localStorage.setItem('vtc_token', token);
+        localStorage.setItem('vtc_instance', instance);
+
+        setAuthStatus(`Connected as @${data.username}@${instance}`, 'ok');
+        document.getElementById('step-1-status').textContent = `@${data.username}`;
+        document.getElementById('step-1').classList.remove('active');
+        document.getElementById('step-1').classList.add('completed');
+        unlockStep(2);
+        if (!silent) showToast('Connected to Mastodon');
+        hideAuthError();
+
+      } catch (err) {
+        setAuthStatus('Connection failed', 'err');
+        showAuthError(`Could not verify token: ${err.message}. Check your instance and token.`);
+      }
+    }
+
+    function clearToken() {
+      localStorage.removeItem('vtc_token');
+      localStorage.removeItem('vtc_instance');
+      document.getElementById('access-token').value = '';
+      state.token = '';
+      setAuthStatus('Token cleared', 'neutral');
+    }
+
+    function setAuthStatus(msg, type) {
+      document.getElementById('auth-text').textContent = msg;
+      const dot = document.getElementById('auth-dot');
+      dot.className = 'auth-dot' + (type === 'ok' ? ' ok' : type === 'err' ? ' err' : '');
+    }
+
+    function showAuthError(msg) {
+      const el = document.getElementById('auth-error');
+      el.textContent = msg;
+      el.classList.add('visible');
+    }
+
+    function hideAuthError() {
+      document.getElementById('auth-error').classList.remove('visible');
+    }
+
+    // ---- Step 2: Reading details ----
+    function updateSlug() {
+      const title = document.getElementById('title').value.trim();
+      const date = document.getElementById('due-date').value || '';
+      const datePrefix = date ? date + '-' : '';
+      const slug = datePrefix + slugify(title);
+      document.getElementById('slug').value = slug;
+      updatePreview();
+    }
+
+    function updatePreview() {
+      const slug = document.getElementById('slug').value.trim();
+      const filename = slug ? `${slug}.md` : '—';
+      const url = slug ? `https://vegantheoryclub.org/readings/${slug}/` : '—';
+      document.getElementById('preview-filename').textContent = filename;
+      document.getElementById('preview-url').textContent = url;
+      state.slug = slug;
+    }
+
+    function goToStep3() {
+      const title = document.getElementById('title').value.trim();
+      const slug = document.getElementById('slug').value.trim();
+      const date = document.getElementById('due-date').value;
+
+      if (!title) { showToast('Title is required'); return; }
+      if (!slug) { showToast('Slug is required'); return; }
+      if (!date) { showToast('Due date is required'); return; }
+
+      state.dueDate = date;
+      state.slug = slug;
+
+      document.getElementById('step-2').classList.remove('active');
+      document.getElementById('step-2').classList.add('completed');
+      document.getElementById('step-2-status').textContent = slug;
+      unlockStep(3);
+      buildToot();
+    }
+
+    // ---- Step 3: Toot ----
+    function buildToot() {
+      const title = document.getElementById('title').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const slug = document.getElementById('slug').value.trim();
+      const url = `https://vegantheoryclub.org/readings/${slug}/`;
+
+      let toot = `We're reading ${title} this week`;
+      if (description) {
+        // Take first sentence of description for toot
+        const firstSentence = description.split(/[.!?]/)[0].trim();
+        if (firstSentence && firstSentence.length < 200) {
+          toot = firstSentence;
+        }
+      }
+      toot += `\n\n${url}`;
+
+      document.getElementById('toot-body').value = toot;
+      countChars();
+    }
+
+    function countChars() {
+      const body = document.getElementById('toot-body').value;
+      const len = body.length;
+      const el = document.getElementById('char-count');
+      el.textContent = `${len} / 500`;
+      el.className = 'char-count' + (len > 500 ? ' over' : '');
+    }
+
+    async function postToot() {
+      const body = document.getElementById('toot-body').value.trim();
+      if (!body) { showToast('Toot body is empty'); return; }
+      if (body.length > 500) { showToast('Toot exceeds 500 characters'); return; }
+
+      const btn = document.getElementById('post-btn');
+      btn.innerHTML = '<span class="spinner"></span>Posting...';
+      btn.disabled = true;
+
+      document.getElementById('toot-error').classList.remove('visible');
+
+      try {
+        const params = new URLSearchParams();
+        params.append('status', body);
+        params.append('visibility', 'public');
+
+        console.log('[VTC] Posting to:', `https://${state.instance}/api/v1/statuses`);
+        console.log('[VTC] Token prefix:', state.token.substring(0, 10) + '...');
+
+        const res = await fetch(`https://${state.instance}/api/v1/statuses`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: params
+        });
+
+        console.log('[VTC] Response status:', res.status);
+        const responseText = await res.text();
+        console.log('[VTC] Full response:', responseText);
+
+        if (!res.ok) {
+          let errMsg = `HTTP ${res.status}`;
+          try { errMsg = JSON.parse(responseText).error || errMsg; } catch(e) {}
+          throw new Error(errMsg);
+        }
+
+        const data = JSON.parse(responseText);
+        state.tootId = data.id;
+        state.tootUrl = data.url;
+
+        document.getElementById('toot-url').textContent = data.url;
+        document.getElementById('toot-id-display').textContent = data.id;
+        document.getElementById('toot-result').style.display = 'block';
+
+        document.getElementById('step-3').classList.remove('active');
+        document.getElementById('step-3').classList.add('completed');
+        document.getElementById('step-3-status').textContent = `ID: ${data.id}`;
+
+        unlockStep(4);
+        buildMarkdown();
+        showToast('Posted to Mastodon!');
+
+      } catch (err) {
+        const errEl = document.getElementById('toot-error');
+        errEl.textContent = `Failed to post: ${err.message}`;
+        errEl.classList.add('visible');
+      } finally {
+        btn.innerHTML = 'Post to Mastodon';
+        btn.disabled = false;
+      }
+    }
+
+    // ---- Step 4: Markdown ----
+    function buildMarkdown() {
+      const title = document.getElementById('title').value.trim();
+      const date = document.getElementById('due-date').value;
+      const author = document.getElementById('author').value.trim();
+      const sourceUrl = document.getElementById('source-url').value.trim();
+      const seriesName = document.getElementById('series-name').value.trim();
+      const seriesOrder = document.getElementById('series-order').value.trim();
+      const topicsRaw = document.getElementById('topics').value.trim();
+      const description = document.getElementById('description').value.trim();
+
+      const topics = topicsRaw
+        ? '[' + topicsRaw.split(',').map(t => `"${t.trim()}"`).join(', ') + ']'
+        : '[]';
+
+      let md = `---\n`;
+      md += `title: "${title}"\n`;
+      md += `date: ${date}\n`;
+      md += `draft: false\n`;
+      if (seriesName) {
+        md += `\nseries: ["${seriesName}"]\n`;
+        if (seriesOrder) md += `series_order: ${seriesOrder}\n`;
+      }
+      md += `\nauthor: "${author}"\n`;
+      if (sourceUrl) md += `source_url: "${sourceUrl}"\n`;
+      md += `scheduled_date: "${date}"\n`;
+      md += `\ntopics: ${topics}\n`;
+      md += `\nshowDate: true\n`;
+      md += `showAuthor: false\n`;
+      md += `showReadingTime: false\n`;
+      md += `showTaxonomies: true\n`;
+      md += `\nshowComments: true\n`;
+      md += `instance: "${state.instance}"\n`;
+      md += `user: "${state.accountUsername}"\n`;
+      md += `tootId: "${state.tootId}"\n`;
+      md += `---\n`;
+      if (description) md += `\n${description}\n`;
+      const discussionNotes = document.getElementById('discussion-notes').value.trim();
+      md += '\n## Discussion notes\n\n';
+      if (discussionNotes) {
+        md += discussionNotes + '\n';
+      } else {
+        md += '<!-- Add discussion questions here -->\n';
+      }
+
+      // Syntax highlight for display
+      const highlighted = md
+        .split('\n')
+        .map(line => {
+          if (line === '---') return `<span style="color:var(--muted)">---</span>`;
+          if (line.startsWith('##')) return `<span style="color:var(--accent)">` + line + `</span>`;
+          const colon = line.indexOf(':');
+          if (colon > 0 && !line.startsWith(' ') && !line.startsWith('-')) {
+            const key = line.substring(0, colon);
+            const val = line.substring(colon + 1);
+            return `<span class="k">${key}</span>:<span class="v">${val}</span>`;
+          }
+          return line;
+        })
+        .join('\n');
+
+      document.getElementById('md-output').innerHTML = highlighted;
+      document.getElementById('step-4-status').textContent = `${state.slug}.md`;
+
+      // Store raw md for download
+      window._rawMD = md;
+    }
+
+    function downloadMD() {
+      if (!window._rawMD) return;
+      const slug = document.getElementById('slug').value.trim();
+      const blob = new Blob([window._rawMD], { type: 'text/markdown;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${slug}.md`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast(`Downloaded ${slug}.md`);
+    }
+
+    function copyMD() {
+      if (!window._rawMD) return;
+      navigator.clipboard.writeText(window._rawMD);
+      showToast('Copied to clipboard');
+    }
+
+    // ---- Utilities ----
+    function unlockStep(num) {
+      const el = document.getElementById(`step-${num}`);
+      el.classList.remove('locked');
+      el.classList.add('active');
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function slugify(str) {
+      return str.toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>
