@@ -26,7 +26,7 @@ Pluto Books, May 20, 2021 - Social Science - 320 pages
 
 The first collection of its kind, Transgender Marxism is a provocative and groundbreaking union of transgender studies and Marxist theory.
 
-[Link to Reading]("https://assets.vegantheoryclub.org/readings/Transgender_Marxism.epub")
+[Link to Reading](https://assets.vegantheoryclub.org/readings/Transgender_Marxism.epub)
 
 ## Discussion Video 
 
